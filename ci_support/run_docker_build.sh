@@ -42,7 +42,7 @@ cat << EOF | docker run -i \
                         -e HOST_USER_ID="${HOST_USER_ID}" \
                         -e CONDA_PY="${CONDA_PY}" \
                         -a stdin -a stdout -a stderr \
-                        condaforge/linux-anvil \
+                        kamasubb/conda-forge-linux-anvil-ppc64le \
                         bash || exit 1
 
 set -e
@@ -51,15 +51,17 @@ export BINSTAR_TOKEN=${BINSTAR_TOKEN}
 set -x
 export PYTHONUNBUFFERED=1
 
+export PATH=$PATH:/opt/conda/bin
+
 echo "$config" > ~/.condarc
 # A lock sometimes occurs with incomplete builds. The lock file is stored in build_artefacts.
 conda clean --lock
 
-conda install --yes --quiet conda-forge-build-setup
-source run_conda_forge_build_setup
+#conda install --yes --quiet conda-forge-build-setup
+#source run_conda_forge_build_setup
 
 conda build /recipe_root --quiet || exit 1
-upload_or_check_non_existence /recipe_root conda-forge --channel=main || exit 1
+#upload_or_check_non_existence /recipe_root conda-forge --channel=main || exit 1
 
 touch /feedstock_root/build_artefacts/conda-forge-build-done
 EOF
